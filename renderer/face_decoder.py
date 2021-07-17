@@ -7,12 +7,16 @@ import numpy as np
 from renderer import mesh_renderer
 from scipy.io import loadmat
 
+from pathlib import Path
+file_path = Path(__file__).parent
+BFM_MODEL_PATH = str((file_path / '''./BFM face model/BFM_model_front_gan.mat''').resolve())
+
 # Reconstruct 3D face based on output coefficients and facemodel
 #-----------------------------------------------------------------------------------------
 
 # BFM 3D face model
 class BFM():
-	def __init__(self,model_path = 'renderer/BFM face model/BFM_model_front_gan.mat'):
+	def __init__(self,model_path = BFM_MODEL_PATH):
 		model = loadmat(model_path)
 		self.meanshape = tf.constant(model['meanshape']) # mean face shape. [3*N,1]
 		self.idBase = tf.constant(model['idBase']) # identity basis. [3*N,80]

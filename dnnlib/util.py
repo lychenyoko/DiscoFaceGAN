@@ -252,6 +252,7 @@ def get_obj_by_name(name: str) -> Any:
 def call_func_by_name(*args, func_name: str = None, **kwargs) -> Any:
     """Finds the python object with the given name and calls it as a function."""
     assert func_name is not None
+    print('\nCalling Function: ' + func_name + '\n')
     func_obj = get_obj_by_name(func_name)
     assert callable(func_obj)
     return func_obj(*args, **kwargs)

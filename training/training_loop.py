@@ -158,6 +158,10 @@ def training_loop(
         minibatch_split = minibatch_in // submit_config.num_gpus
         Gs_beta         = 0.5 ** tf.div(tf.cast(minibatch_in, tf.float32), G_smoothing_kimg * 1000.0) if G_smoothing_kimg > 0.0 else 0.0
 
+    sched = training_schedule(cur_nimg=total_kimg*1000, training_set=training_set, num_gpus=submit_config.num_gpus, **sched_args)
+    print('Minibatch Size: ' + str(sched.minibatch))
+    print('Resolution Size: ' + str(sched.resolution))
+
     G_opt = tflib.Optimizer(name='TrainG', learning_rate=lrate_in, **G_opt_args)
     D_opt = tflib.Optimizer(name='TrainD', learning_rate=lrate_in, **D_opt_args)
     for gpu in range(submit_config.num_gpus):
@@ -235,6 +239,7 @@ def training_loop(
 
         # Choose training parameters and configure training ops.
         sched = training_schedule(cur_nimg=cur_nimg, training_set=training_set, num_gpus=submit_config.num_gpus, **sched_args)
+
         training_set.configure(sched.minibatch // submit_config.num_gpus, sched.lod)
         if reset_opt_for_new_lod:
             if np.floor(sched.lod) != np.floor(prev_lod) or np.ceil(sched.lod) != np.ceil(prev_lod):
@@ -247,6 +252,7 @@ def training_loop(
                 tflib.run([D_train_op, Gs_update_op], {lod_in: sched.lod, lrate_in: sched.D_lrate, minibatch_in: sched.minibatch, resolution: sched.resolution})
                 cur_nimg += sched.minibatch
             tflib.run([G_train_op], {lod_in: sched.lod, lrate_in: sched.G_lrate, minibatch_in: sched.minibatch, resolution: sched.resolution})
+
 
             # print('iter')
         # Perform maintenance tasks once per tick.

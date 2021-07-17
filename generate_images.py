@@ -14,6 +14,9 @@ import config
 import tensorflow as tf
 import argparse
 
+from pathlib import Path
+file_path = Path(__file__).parent
+
 # define mapping network from z space to lambda space
 def CoeffDecoder(z,ch_depth = 3, ch_dim = 512, coeff_length = 128):
     with tf.variable_scope('stage1'):
@@ -47,10 +50,10 @@ def restore_weights_and_initialize():
     saver_gamma = tf.train.Saver(var_list = var_gamma_list,max_to_keep = 100)
     saver_rot = tf.train.Saver(var_list = var_rot_list,max_to_keep = 100)
     
-    saver_id.restore(tf.get_default_session(),'./vae/weights/id/stage1_epoch_395.ckpt')
-    saver_exp.restore(tf.get_default_session(),'./vae/weights/exp/stage1_epoch_395.ckpt')
-    saver_gamma.restore(tf.get_default_session(),'./vae/weights/gamma/stage1_epoch_395.ckpt')
-    saver_rot.restore(tf.get_default_session(),'./vae/weights/rot/stage1_epoch_395.ckpt')
+    saver_id.restore(tf.get_default_session(), str((file_path / './vae/weights/id/stage1_epoch_395.ckpt').resolve()))
+    saver_exp.restore(tf.get_default_session(), str((file_path / './vae/weights/exp/stage1_epoch_395.ckpt').resolve()))
+    saver_gamma.restore(tf.get_default_session(), str((file_path / './vae/weights/gamma/stage1_epoch_395.ckpt').resolve()))
+    saver_rot.restore(tf.get_default_session(), str((file_path / './vae/weights/rot/stage1_epoch_395.ckpt').resolve()))
 
 def z_to_lambda_mapping(latents):
     with tf.variable_scope(tf.get_variable_scope(), reuse=tf.AUTO_REUSE):

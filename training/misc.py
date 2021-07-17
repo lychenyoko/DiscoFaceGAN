@@ -101,6 +101,10 @@ def locate_run_dir(run_id_or_run_dir):
     for search_dir in ['']:
         full_search_dir = config.result_dir if search_dir == '' else os.path.normpath(os.path.join(config.result_dir, search_dir))
         run_dir = os.path.join(full_search_dir, str(run_id_or_run_dir))
+
+        print('---Debugging---')
+        print('The run directory is: ' + str(run_dir))
+
         if os.path.isdir(run_dir):
             return run_dir
         run_dirs = sorted(glob.glob(os.path.join(full_search_dir, '*')))
