@@ -21,13 +21,16 @@ from __future__ import print_function
 import os
 import tensorflow as tf
 
+from pathlib import Path
+file_path = Path(__file__).parent
+rasterizer_path = str((file_path / '''./rasterize_triangles_kernel_1.so''').resolve())
 
 # rasterize_triangles_module = tf.load_op_library(
 #     os.path.join(os.environ['TEST_SRCDIR'],
 #     'tf_mesh_renderer/mesh_renderer/kernels/rasterize_triangles_kernel.so'))
 
 
-rasterize_triangles_module = tf.load_op_library('/home/code-base/user_space/2021_work/DiscoFaceGAN/renderer/rasterize_triangles_kernel_1.so')
+rasterize_triangles_module = tf.load_op_library(rasterizer_path)
 
 
 # This epsilon should be smaller than any valid barycentric reweighting factor
